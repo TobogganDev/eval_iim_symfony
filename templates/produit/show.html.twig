@@ -1,0 +1,81 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ produit.name }}{% endblock %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-md-8">
+            <h1>{{ produit.name }}</h1>
+            <p><span class="badge bg-secondary">{{ produit.category }}</span></p>
+
+            <div class="card mt-4">
+                <div class="card-body">
+                    <h5 class="card-title">Description</h5>
+                    <p class="card-text">{{ produit.description }}</p>
+
+                    <hr>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h3 class="text-primary">Prix : {{ produit.price }} 💰</h3>
+                        </div>
+                        <div class="col-md-6 text-end">
+                            {% if app.user %}
+                                {% if app.user.active %}
+                                    {% if app.user.points >= produit.price %}
+                                        <form method="post" action="{{ path('app_produit_acheter', {'id': produit.id}) }}" style="display: inline;">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('acheter' ~ produit.id) }}">
+                                            <button type="submit" class="btn btn-success btn-lg"
+                                                    onclick="return confirm('Confirmer l\'achat de {{ produit.name }} pour {{ produit.price }} points ?')">
+                                                Acheter
+                                            </button>
+                                        </form>
+                                    {% else %}
+                                        <button class="btn btn-secondary btn-lg" disabled>
+                                            Points insuffisants
+                                        </button>
+                                        <p class="text-danger mt-2">
+                                            Il vous manque {{ produit.price - app.user.points }} points
+                                        </p>
+                                    {% endif %}
+                                {% else %}
+                                    <div class="alert alert-warning">
+                                        Votre compte est désactivé. Vous ne pouvez pas effectuer d'achat.
+                                    </div>
+                                {% endif %}
+                            {% else %}
+                                <a href="{{ path('app_login') }}" class="btn btn-primary btn-lg">
+                                    Connectez-vous pour acheter
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-3">
+                <a href="{{ path('app_produit_index') }}" class="btn btn-secondary">
+                    ← Retour aux produits
+                </a>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            {% if app.user %}
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Votre solde</h5>
+                        <h2 class="text-center {{ app.user.points >= produit.price ? 'text-success' : 'text-danger' }}">
+                            {{ app.user.points }} 💰
+                        </h2>
+                        {% if app.user.points >= produit.price %}
+                            <p class="text-center text-muted">
+                                Après achat : {{ app.user.points - produit.price }} 💰
+                            </p>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

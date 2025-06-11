@@ -1,0 +1,98 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mon profil{% endblock %}
+
+{% block body %}
+    <h1>Mon profil</h1>
+
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Informations personnelles</h5>
+
+                    <dl class="row">
+                        <dt class="col-sm-4">Email :</dt>
+                        <dd class="col-sm-8">{{ user.email }}</dd>
+
+                        <dt class="col-sm-4">Nom :</dt>
+                        <dd class="col-sm-8">{{ user.lastname }}</dd>
+
+                        <dt class="col-sm-4">Prénom :</dt>
+                        <dd class="col-sm-8">{{ user.firstname }}</dd>
+
+                        <dt class="col-sm-4">Points :</dt>
+                        <dd class="col-sm-8">
+                            <h4 class="text-primary mb-0">{{ user.points }} 💰</h4>
+                        </dd>
+
+                        <dt class="col-sm-4">Statut :</dt>
+                        <dd class="col-sm-8">
+                            {% if user.active %}
+                                <span class="badge bg-success">Compte actif</span>
+                            {% else %}
+                                <span class="badge bg-warning text-dark">Compte désactivé</span>
+                            {% endif %}
+                        </dd>
+
+                        <dt class="col-sm-4">Rôles :</dt>
+                        <dd class="col-sm-8">
+                            {% for role in user.roles %}
+                                {% if role == 'ROLE_ADMIN' %}
+                                    <span class="badge bg-danger">Administrateur</span>
+                                {% elseif role == 'ROLE_USER' %}
+                                    <span class="badge bg-primary">Utilisateur</span>
+                                {% endif %}
+                            {% endfor %}
+                        </dd>
+
+                        <dt class="col-sm-4">Membre depuis :</dt>
+                        <dd class="col-sm-8">{{ user.createdAt ? user.createdAt|date('d/m/Y') : '' }}</dd>
+                    </dl>
+
+                    <hr>
+
+                    <a href="{{ path('app_profile_edit') }}" class="btn btn-primary">
+                        Modifier mes informations
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        Notifications récentes
+                        <a href="{{ path('app_profile_notifications') }}" class="btn btn-sm btn-outline-primary float-end">
+                            Voir tout
+                        </a>
+                    </h5>
+
+                    {% set recent_notifications = user.notifications|slice(0, 5) %}
+                    {% if recent_notifications|length > 0 %}
+                        <div class="list-group list-group-flush">
+                            {% for notification in recent_notifications %}
+                                <div class="list-group-item px-0">
+                                    <small class="text-muted">
+                                        {{ notification.createdAt ? notification.createdAt|date('d/m/Y H:i') : '' }}
+                                    </small><br>
+                                    {{ notification.label }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-muted">Aucune notification</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            {% if not user.active %}
+                <div class="alert alert-warning mt-3">
+                    <h6 class="alert-heading">⚠️ Compte désactivé</h6>
+                    <p class="mb-0">Votre compte a été désactivé par un administrateur. Vous ne pouvez pas effectuer d'achats.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

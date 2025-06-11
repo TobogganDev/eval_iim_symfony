@@ -1,0 +1,62 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gestion des produits{% endblock %}
+
+{% block body %}
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Gestion des produits</h1>
+        <a href="{{ path('app_admin_produit_new') }}" class="btn btn-success">
+            + Ajouter un produit
+        </a>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nom</th>
+                <th>Prix</th>
+                <th>Catégorie</th>
+                <th>Créé par</th>
+                <th>Créé le</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for produit in produits %}
+                <tr>
+                    <td>{{ produit.id }}</td>
+                    <td>{{ produit.name }}</td>
+                    <td>{{ produit.price }} 💰</td>
+                    <td><span class="badge bg-secondary">{{ produit.category }}</span></td>
+                    <td>
+                        {% if produit.createdBy %}
+                            {{ produit.createdBy.firstname }} {{ produit.createdBy.lastname }}
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
+                    <td>{{ produit.createdAt ? produit.createdAt|date('d/m/Y H:i') : '' }}</td>
+                    <td>
+                        <a href="{{ path('app_produit_show', {'id': produit.id}) }}" class="btn btn-sm btn-info">
+                            Voir
+                        </a>
+                        <a href="{{ path('app_admin_produit_edit', {'id': produit.id}) }}" class="btn btn-sm btn-primary">
+                            Modifier
+                        </a>
+                        <form method="post" action="{{ path('app_admin_produit_delete', {'id': produit.id}) }}" style="display: inline;" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce produit ?');">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ produit.id) }}">
+                            <button class="btn btn-sm btn-danger">Supprimer</button>
+                        </form>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="7" class="text-center">Aucun produit trouvé</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

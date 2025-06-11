@@ -4,7 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Produit;
 use App\Entity\User;
-use App\Form\ProduitType;
+use App\Form\ProduitTypeForm;
 use App\Message\AddPointsMessage;
 use App\Repository\ProduitRepository;
 use App\Repository\UserRepository;
@@ -34,7 +34,7 @@ class AdminController extends AbstractController
         $produit = new Produit();
         $produit->setCreatedBy($this->getUser());
 
-        $form = $this->createForm(ProduitType::class, $produit);
+        $form = $this->createForm(ProduitTypeForm::class, $produit);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -53,7 +53,7 @@ class AdminController extends AbstractController
     #[Route('/produit/{id}/edit', name: 'app_admin_produit_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Produit $produit, EntityManagerInterface $entityManager): Response
     {
-        $form = $this->createForm(ProduitType::class, $produit);
+        $form = $this->createForm(ProduitTypeForm::class, $produit);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {

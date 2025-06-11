@@ -1,0 +1,57 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier {{ produit.name }}{% endblock %}
+
+{% block body %}
+    <h1>Modifier le produit</h1>
+
+    <div class="row">
+        <div class="col-md-6">
+            {{ form_start(form) }}
+            <div class="mb-3">
+                {{ form_label(form.name) }}
+                {{ form_widget(form.name, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(form.name) }}
+            </div>
+
+            <div class="mb-3">
+                {{ form_label(form.price) }}
+                {{ form_widget(form.price, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(form.price) }}
+            </div>
+
+            <div class="mb-3">
+                {{ form_label(form.category) }}
+                {{ form_widget(form.category, {'attr': {'class': 'form-select'}}) }}
+                {{ form_errors(form.category) }}
+            </div>
+
+            <div class="mb-3">
+                {{ form_label(form.description) }}
+                {{ form_widget(form.description, {'attr': {'class': 'form-control', 'rows': 5}}) }}
+                {{ form_errors(form.description) }}
+            </div>
+
+            <button type="submit" class="btn btn-primary">Enregistrer les modifications</button>
+            <a href="{{ path('app_admin_produit_index') }}" class="btn btn-secondary">Annuler</a>
+            {{ form_end(form) }}
+        </div>
+
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Informations</h5>
+                    <p><strong>Créé par :</strong>
+                        {% if produit.createdBy %}
+                            {{ produit.createdBy.firstname }} {{ produit.createdBy.lastname }}
+                        {% else %}
+                            -
+                        {% endif %}
+                    </p>
+                    <p><strong>Créé le :</strong> {{ produit.createdAt ? produit.createdAt|date('d/m/Y H:i:s') : '' }}</p>
+                    <p><strong>Modifié le :</strong> {{ produit.updatedAt ? produit.updatedAt|date('d/m/Y H:i:s') : '' }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

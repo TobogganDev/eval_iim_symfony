@@ -1,0 +1,63 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier mon profil{% endblock %}
+
+{% block body %}
+    <h1>Modifier mon profil</h1>
+
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    {{ form_start(form) }}
+                    <div class="mb-3">
+                        {{ form_label(form.lastname) }}
+                        {{ form_widget(form.lastname, {'attr': {'class': 'form-control'}}) }}
+                        {{ form_errors(form.lastname) }}
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form_label(form.firstname) }}
+                        {{ form_widget(form.firstname, {'attr': {'class': 'form-control'}}) }}
+                        {{ form_errors(form.firstname) }}
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">
+                        Enregistrer les modifications
+                    </button>
+                    <a href="{{ path('app_profile') }}" class="btn btn-secondary">
+                        Annuler
+                    </a>
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Informations non modifiables</h5>
+
+                    <dl class="row">
+                        <dt class="col-sm-4">Email :</dt>
+                        <dd class="col-sm-8">{{ app.user.email }}</dd>
+
+                        <dt class="col-sm-4">Points :</dt>
+                        <dd class="col-sm-8">
+                            <strong class="text-primary">{{ app.user.points }} 💰</strong>
+                        </dd>
+
+                        <dt class="col-sm-4">Statut :</dt>
+                        <dd class="col-sm-8">
+                            {% if app.user.active %}
+                                <span class="badge bg-success">Actif</span>
+                            {% else %}
+                                <span class="badge bg-warning text-dark">Désactivé</span>
+                            {% endif %}
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

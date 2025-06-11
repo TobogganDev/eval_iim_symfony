@@ -1,0 +1,65 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Accueil - Boutique Points{% endblock %}
+
+{% block body %}
+    <div class="jumbotron text-center py-5">
+        <h1 class="display-4">Bienvenue sur la Boutique Points ! 🛍️</h1>
+        <p class="lead">Échangez vos points contre des produits exclusifs</p>
+
+        {% if app.user %}
+            <hr class="my-4">
+            <p>Bonjour <strong>{{ app.user.firstname }} {{ app.user.lastname }}</strong> !</p>
+            <p class="h4">Votre solde : <span class="text-primary">{{ app.user.points }} 💰</span></p>
+            <a class="btn btn-primary btn-lg mt-3" href="{{ path('app_produit_index') }}">
+                Voir les produits
+            </a>
+        {% else %}
+            <hr class="my-4">
+            <p>Connectez-vous pour commencer vos achats</p>
+            <a class="btn btn-primary btn-lg" href="{{ path('app_login') }}">Se connecter</a>
+            <a class="btn btn-outline-primary btn-lg" href="{{ path('app_register') }}">S'inscrire</a>
+        {% endif %}
+    </div>
+
+    {% if app.user %}
+        <div class="row mt-5">
+            <div class="col-md-4">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h5 class="card-title">💰 Vos Points</h5>
+                        <h2 class="text-primary">{{ app.user.points }}</h2>
+                        <p class="card-text">Points disponibles pour vos achats</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h5 class="card-title">🔔 Notifications</h5>
+                        <h2 class="text-info">{{ app.user.notifications|length }}</h2>
+                        <a href="{{ path('app_profile_notifications') }}" class="btn btn-sm btn-info">
+                            Voir les notifications
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h5 class="card-title">👤 Statut</h5>
+                        {% if app.user.active %}
+                            <h2 class="text-success">✓</h2>
+                            <p class="card-text">Compte actif</p>
+                        {% else %}
+                            <h2 class="text-warning">⚠️</h2>
+                            <p class="card-text">Compte désactivé</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}

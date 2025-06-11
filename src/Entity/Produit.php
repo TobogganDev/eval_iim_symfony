@@ -3,12 +3,33 @@
 namespace App\Entity;
 
 use App\Repository\ProduitRepository;
+use App\State\MyProductsProvider;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Get;
+use App\Entity\Trait\TimestampableTrait;
+
+#[ApiResource(
+    operations: [
+        new GetCollection(
+            uriTemplate: '/api/mes-produit',
+            security: "is_granted('ROLE_ADMIN')",
+            provider: MyProductsProvider::class
+        ),
+        new Get(
+            uriTemplate: '/api/mes-produit/{id}',
+            security: "is_granted('ROLE_ADMIN') and object.getCreatedBy() == user"
+        )
+    ]
+)]
 
 #[ORM\Entity(repositoryClass: ProduitRepository::class)]
 class Produit
 {
+    use TimestampableTrait;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -26,7 +47,7 @@ class Produit
     #[ORM\Column(type: Types::TEXT)]
     private ?string $description = null;
 
-    #[ORM\ManyToOne(inversedBy: 'produits')]
+    #[ORM\ManyToOne(inversedBy: 'produit')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $createdBy = null;
 
